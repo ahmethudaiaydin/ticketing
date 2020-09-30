@@ -1,5 +1,3 @@
-import { BadRequestError } from "./errors/bad-request-error";
-
 export * from './errors/bad-request-error';
 export * from './errors/custom-error';
 export * from './errors/database-connection-error';
@@ -17,4 +15,4 @@ export * from './events/ticket-created-event';
 export * from './events/ticket-updated-event';
 export * from './events/types/order-status';
 export * from './events/order-cancelled-event';
-export * from './events/order-created-event;'
+export * from './events/order-created-event';
