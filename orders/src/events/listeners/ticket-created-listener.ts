@@ -14,8 +14,9 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     // Data'nın tipindeki TicketCreatedEvent['data'] şu demek oluyor. 
     // Datanın type check'ini yapmak için TicketCreatedEvent üzerindeki 'data' property'sine git ve onunla validate et.
     async onMessage(data: TicketCreatedEvent['data'], msg: Message) {
-        const { title, price } = data;
+        const { id, title, price } = data;
         const ticket = Ticket.build({
+            id,
             title,
             price,
         });
