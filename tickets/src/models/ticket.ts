@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin} from 'mongoose-update-if-current';
+import { updateTicketRouter } from '../routes/update';
 
 interface TicketAttrs {
     title: string;
@@ -10,7 +12,8 @@ interface TicketAttrs {
 interface TicketDoc extends mongoose.Document {
     title: string;
     price: number;
-    userId: string
+    userId: string;
+    version: number;
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -38,6 +41,13 @@ const ticketSchema = new mongoose.Schema({
         }
     }
 });
+
+//__v yerine version kullanacağız.
+ticketSchema.set('versionKey', 'version');
+
+//Version'ın update esnasında kullanılmasını aktifleştiriyoruz.
+//Optimistic concurrency
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
     return new Ticket(attrs);
