@@ -3,6 +3,7 @@ import { Subjects } from './subjects';
 
 export interface OrderCreatedEvent {
     subject: Subjects.OrderCreated;
+    version: number;
     data: {
         id: string;
         status: OrderStatus;
