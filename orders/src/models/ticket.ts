@@ -1,20 +1,24 @@
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Order, OrderStatus } from '../models/order';
 import mongoose from 'mongoose';
 
 interface TicketAttrs {
-    id : string;
+    id: string;
     title: string;
     price: number;
+    version: number;
 }
 
 export interface TicketDoc extends mongoose.Document {
     title: string;
     price: number;
+    version: number;
     isReserved(): Promise<boolean>;
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
     build(attrs: TicketAttrs): TicketDoc;
+    findByEvent(event: { id: string, version: number }): Promise<TicketDoc | null>;
 }
 
 const ticketSchema = new mongoose.Schema({
@@ -36,6 +40,27 @@ const ticketSchema = new mongoose.Schema({
     }
 });
 
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
+
+// Burada save metodu arasına girip, version değerini manipule ediyoruz.
+// arrow func. kullanamıyoruz çünkü this'i değiştiriyor.
+// ticketSchema.pre('save', function (done) {
+
+//     // @ts-ignore
+//     this.$where = {
+//         version: this.get('version') -1
+//     };
+
+//     done();
+// });
+
+ticketSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+    return Ticket.findOne({
+        _id: event.id,
+        version: event.version - 1
+    });
+}
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
     return new Ticket({
         _id: attrs.id,

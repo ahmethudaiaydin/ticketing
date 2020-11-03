@@ -5,7 +5,7 @@ import { updateTicketRouter } from '../routes/update';
 interface TicketAttrs {
     title: string;
     price: number;
-    userId: string
+    userId: string;
 
 }
 
